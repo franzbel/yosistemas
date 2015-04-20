@@ -4,17 +4,20 @@ class EventosController < ApplicationController
   before_filter :grupos
   # GET /eventos
   def index
-     @eventos = Array.new 
-   if params[:grupo] != nil && Grupo.find(params[:grupo]).habilitado
-        @grupo = Grupo.find(params[:grupo])       
-      else
-        @grupo = Grupo.find(1)
-      end
-       @grupo.eventos.each do |evento|
-          if evento.aprobado?(@grupo.id) || @grupo.llave == "publico"
-            @eventos << evento
-          end
-        end
+    # @eventos = Array.new 
+    # if params[:grupo] != nil && Grupo.find(params[:grupo]).habilitado
+    #     @grupo = Grupo.find(params[:grupo])       
+    # else
+    #     @grupo = Grupo.find(1)
+    # end
+    # @grupo.eventos.each do |evento|
+    #     if evento.aprobado?(@grupo.id) || @grupo.llave == "publico"
+    #       @eventos << evento
+    #     end
+    # end
+    @eventos = Array.new 
+    @grupo = Grupo.buscar(params[:id])
+    @eventos = @grupo.eventos
   end
 
 
