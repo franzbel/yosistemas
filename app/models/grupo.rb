@@ -14,6 +14,7 @@ class Grupo < ActiveRecord::Base
     
     after_create :habilitar_grupo
 
+
     def self.privados
       Grupo.where(:estado => true)
     end

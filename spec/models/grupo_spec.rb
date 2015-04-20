@@ -26,4 +26,9 @@ describe Grupo do
     expect(grupo.correspondeAGrupo("pr e")).to be_true
   end
   
+  it "retorna grupo publico" do 
+      grupo_publico = FactoryGirl.create(:grupo_publico)
+      expect(Grupo.obtener_grupo_publico).to eq (grupo_publico)
+  end 
+  
 end

@@ -27,7 +27,11 @@ describe EventosController do
       expect(assigns(:grupo)).to eq(grupo)
     end
   end
+  it "obtiene grupo publico" do
+    grupo = FactoryGirl.create(:grupo_publico)
+  end
 end
+
 =begin
     it "obtiene todos los temas del grupo especificado" do  
       grupo = FactoryGirl.create(:grupo)
