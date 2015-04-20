@@ -32,7 +32,6 @@ describe EventosController do
     grupo = FactoryGirl.create(:grupo)
     controlador = EventosController.new
     expect(Grupo.find_by_llave("publico")).to eq(controlador.instance_eval{grupos}) 
-
   end
 end
 

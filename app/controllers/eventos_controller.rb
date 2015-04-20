@@ -128,7 +128,7 @@ class EventosController < ApplicationController
     end
 
     def grupos
-      @grupo = Grupo.find(1)
+      Grupo.find_by_llave("publico")
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
