@@ -4,7 +4,8 @@ class GruposController < ApplicationController
   
   def index
     @grupos = Grupo.all_habilitados.page(params[:page]).per(5)
-    @grupo = Grupo.find(1)
+    # @grupo = Grupo.find(1)
+    @grupo = Grupo.find_by_llave("publico")
   end
 
   def deshabilitar_grupo

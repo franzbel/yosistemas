@@ -5,7 +5,16 @@ describe GruposController do
     controller.class.skip_before_filter :require_log_in #para evitar este filtro de application_controller
 
   end
+  describe 'GET #index' do
+     it "obtiene grupo publico" do
+        grupo_publico = FactoryGirl.create(:grupo_publico)
+        grupo = FactoryGirl.create(:grupo)
+        
+        get :index
 
+        expect(Grupo.find_by_llave("publico")).to eq(grupo_publico) 
+    end
+  end
   # describe 'GET #buscar' do
   #   it "obtiene grupo que coincide con el nombre" do  
   #     grupo1 = FactoryGirl.create(:grupo, nombre: 'grupo 1')
@@ -42,21 +51,22 @@ describe GruposController do
    #    expect(assigns(:eventos)).to end_with(evento2)
    #    expect(assigns(:grupo)).to eq(grupo)
    #  end
-   it "obtiene todos los temas de grupo publico" do  
-      grupo = FactoryGirl.create(:grupo_publico)
-      tema1 = FactoryGirl.create(:tema, titulo: 'Tema 1')
-      tema2 = FactoryGirl.create(:tema, titulo: 'Tema 2')
+   # it "obtiene todos los temas de grupo publico" do  
+   #    grupo = FactoryGirl.create(:grupo_publico)
+   #    tema1 = FactoryGirl.create(:tema, titulo: 'Tema 1')
+   #    tema2 = FactoryGirl.create(:tema, titulo: 'Tema 2')
 
-      #grupo = Grupo.find(1)  #grupo publico
-      grupo.temas << tema1
-      tema1.grupos_pertenece << grupo
-      grupo.temas << tema2
-      tema2.grupos_pertenece << grupo
+   #    #grupo = Grupo.find(1)  #grupo publico
+   #    grupo.temas << tema1
+   #    tema1.grupos_pertenece << grupo
+   #    grupo.temas << tema2
+   #    tema2.grupos_pertenece << grupo
 
-      get :index
+   #    get :index
       
-      expect(assigns(:temas)).to start_with(tema1)
-      expect(assigns(:temas)).to end_with(tema2)
-      expect(assigns(:grupo)).to eq(grupo)
-    end
+   #    expect(assigns(:temas)).to start_with(tema1)
+   #    expect(assigns(:temas)).to end_with(tema2)
+   #    expect(assigns(:grupo)).to eq(grupo)
+   #  end
+
 end
