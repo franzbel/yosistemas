@@ -28,7 +28,11 @@ describe EventosController do
     end
   end
   it "obtiene grupo publico" do
-    grupo = FactoryGirl.create(:grupo_publico)
+    grupo_publico = FactoryGirl.create(:grupo_publico)
+    grupo = FactoryGirl.create(:grupo)
+    controlador = EventosController.new
+    expect(Grupo.find_by_llave("publico")).to eq(controlador.instance_eval{grupos}) 
+
   end
 end
 
