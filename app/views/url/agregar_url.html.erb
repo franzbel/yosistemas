@@ -1,0 +1,44 @@
+<% if current_user.rol=="Administrador" %>	
+	<div class="panel panel-info">
+	  	<div class="panel-heading">
+			<h3 style="text-align:center;">
+				Administración de URLS
+			</h3>
+	  	</div>
+	  	<div class="panel-body">
+	  		<%= bootstrap_form_for :url do |f| %>
+		    	<%= f.text_field :direccion, label: "Dirección URL" %>
+		        <%= f.submit "Ingresar URL", :class => "btn btn-primary"%>
+			<% end %>
+			<div class="panel-heading">
+				<h3>
+					Historial de urls utilizadas
+				</h3>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<th>
+						Dirección URL
+					</th>
+					<th>
+						Fecha de creación
+					</th>
+					<% @urls.each do |u| %>
+						<tr>
+							<td>
+								<%= u.direccion%>
+							</td>
+							<td>
+								<%= u.created_at.to_date%>
+							</td>
+						</tr>
+					<% end %>
+				</table>
+			</div>
+	  	</div>
+	</div>
+<% else %>
+	<h1>
+		Usted no esta autorizado a ver esta pagina
+	</h1>
+<% end %>

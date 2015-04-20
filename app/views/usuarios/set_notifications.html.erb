@@ -1,0 +1,79 @@
+<%= form_for @usuario do |usuario| %>
+    <% usuario.hidden_field  :activa, :value=>true %>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3>
+                <b>Modificar Configuracion de notificaciones</b>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <center><img class="img-circle"> <%= image_tag avatar_tam_url(@usuario,110) %><br></center>
+                <table class="table table-user-information">
+                    <tbody>
+                        <tr>
+                            <td><h4>Tareas:</h4></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                        <td></td>
+                            <td><b>En la aplicación</b></td>
+                            <td><%= usuario.radio_button :push_task, true%> Activadas</td>
+                            <td><%= usuario.radio_button :push_task, false%> Desactivadas</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><b>Via Email:</b></td>
+                            <td><%= usuario.radio_button :mailer_task, true%> Activadas</td>
+                            <td><%= usuario.radio_button :mailer_task, false%> Desactivadas</td>
+                        </tr>
+                        <tr>
+                            <td><h4>Temas:</h4></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><b>En la aplicación:</b></td>
+                            <td><%= usuario.radio_button :push_theme, true%> Activadas</td>
+                            <td><%= usuario.radio_button :push_theme, false%> Desactivadas</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><b>Via Email:</b></td>
+                            <td><%= usuario.radio_button :mailer_theme, true%> Activadas</td>
+                            <td><%= usuario.radio_button :mailer_theme, false%> Desactivadas</td>
+                        </tr>                        
+                        <tr>
+                            <td><h4>Eventos:</h4></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><b>En la aplicación:</b></td>
+                            <td><%= usuario.radio_button :push_event, true%> Activadas</td>
+                            <td><%= usuario.radio_button :push_event, false%> Desactivadas</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><b>Via Email:</b></td>
+                            <td><%= usuario.radio_button :mailer_event, true%> Activadas</td>
+                            <td><%= usuario.radio_button :mailer_event, false%> Desactivadas</td>
+                            
+                        </tr>                                    
+                    </tbody>
+                </table>         
+      </div>
+      <ul class="list-group">
+        <li class="list-group-item">
+            <center>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </center>
+        </li>
+      </ul>
+    </div>
+<% end %>

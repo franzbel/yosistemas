@@ -1,0 +1,56 @@
+<div class="panel panel-info">
+  <div class="panel-heading"><center><h3>
+      <h1>Resultados del cuestionario</h1>
+  </h3></center></div>
+    <a data-toggle="collapse" data-parent="#accordion" href="<%= "#collapse"+ @usuario.id.to_s %>">  
+      <h4><%= image_tag avatar_tam_url(@usuario,40) %>&nbsp;&nbsp;<%= @usuario.nombre %> &nbsp;<%= @usuario.apellido %></h4>
+    </a>
+      <div id="<%= "collapse"+@usuario.id.to_s%>" class="panel-collapse collapse in">
+        <div class="panel-body">
+        <div class="well">
+        <div class="row">
+          <% @preguntas.each do |pregunta| %>
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Pregunta: <%= pregunta.texto %></th>
+                </tr>
+              </thead>
+            </table>
+            <% @respuestas.each do |respuesta|%>
+              <% if respuesta.usuario_id == @usuario.id && pregunta.id == respuesta.pregunta_id%>
+                <table class="table table-bordered table-hover">
+                  <tbody>
+                    <tr>
+                      <td>Respuesta: <%= respuesta.respuesta %></td>
+                      <td>
+                          <% if respuesta.calificacion == true %>
+                            Correcta
+                          <% end %> 
+                          <% if respuesta.calificacion == false %>
+                            Incorrecta
+                          <% end %>
+                          <% if respuesta.calificacion == nil %>
+                            No corregida
+                          <% end %>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <% if respuesta.tipo == "Texto Libre" %>
+                    <tbody>
+                      <tr>
+                        <td> Comentario: </td>
+                        <td> <%= respuesta.comentario.to_s %> </td>
+                      </tr>
+                    </tbody>    
+                  <% end %>
+                </table>
+                
+              <% end %>   
+            <% end %><br>
+          <% end %>  
+        </div>
+        </div>  
+        </div>
+        </div>
+</div>

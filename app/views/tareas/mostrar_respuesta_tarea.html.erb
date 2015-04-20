@@ -1,0 +1,42 @@
+
+
+  <div class="panel panel-success">  
+  <div class="panel-heading">
+    <h3><%= @respuesta_tarea.tarea.titulo %></h3>
+  </div>
+  <div class="panel-body">
+    <span><b>Respuesta:</b><br><%= @respuesta_tarea.descripcion %></span>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item"><span style="color: gray;">Tarea enviada el <%= @respuesta_tarea.created_at.localtime.strftime("%d/%m/%Y a las: %I:%M  %p") %><br>Por: <%= image_tag avatar_tam_url(@respuesta_tarea.usuario,20)  %><%= @respuesta_tarea.usuario.nombre+" "+@respuesta_tarea.usuario.apellido%></span>
+    </li>
+  </ul>
+</div>
+
+
+  <% if(@respuesta_tarea.archivo_adjunto_respuestas.size>0) %>        
+    <ul class="list-group">
+      <li class="list-group-item">
+        <label><i class="icon-download"></i> Adjuntos</label>
+          <hr style="margin-top:0px;" />
+            <ul>
+              <% @respuesta_tarea.archivo_adjunto_respuestas.each do |arch| %>
+                <li class="attachment-link" title="Archivo tipo .<%=arch.archivo_file_name.split('.').last%>">
+                 <a href="<%=arch.archivo.url(download: true)%>"><img class="attachment-img" src="/assets/filetypes/default.png" file-type="<%=arch.archivo_file_name.split('.').last%>" ><%=arch.archivo_file_name[0,arch.archivo_file_name.rindex('.')]%></a>
+                </li>
+              <%end%>
+             </ul>
+      </li>
+    </ul>
+  <% end %>
+
+<script>
+  $(document).ready(function() {
+     $('#top').find('a').trigger('click');
+    });
+ </script>
+<script type="text/javascript">
+  getImagesForAttachedFiles();
+</script>
+
+

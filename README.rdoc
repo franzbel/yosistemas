@@ -1,0 +1,11 @@
+== YO SISTEMAS 
+
+Bienvenidos al repositorio de Yo Sistemas! La plataforma educativa diseñada para la interacción entre docentes y estudiantes de la
+Universidad Católica Boliviana Cochabamba.
+
+
+* Canal de Youtube con videos que explican mas acerca del sistema: 
+    - https://www.youtube.com/channel/UChDPv_2fhoPmsJyjnGb2AMA
+
+* Archivo con varios comandos utiles (cheatsheet git, heroku, rvm, etc):
+    - https://github.com/israelantezana/yosistemas/blob/master/cheatsheet.md

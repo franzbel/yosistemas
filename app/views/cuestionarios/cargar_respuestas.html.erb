@@ -1,0 +1,33 @@
+<%= form_tag( calificar_path, :method=>'post', :multipart => true) do %>
+<div class="panel panel-info">
+  <div class="panel-heading"><center><h3><b>Calificar preguntas de texto</b></h3></center></div>
+  <div class="panel-body">
+    <% @cuestionario.preguntas.each do |pregunta| %>
+                <% if pregunta.tipo == 'Texto Libre'%>
+                  <label for="inputTitle"><%= pregunta.texto %></label>
+                  <% @respuestas.each do |respuesta|%>
+                    <% if pregunta.id == respuesta.pregunta_id%>
+                      
+                        <%= text_area_tag :texto, respuesta.respuesta.to_s  ,options={:class=>'form-control' ,:disabled => true}%>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                      
+                        <%= hidden_field_tag 'id_respuestas[]', respuesta.id %>
+                        <br>
+                        <% if respuesta.calificacion==nil || respuesta.calificacion==""%>
+                            <%= text_area_tag 'comentarios[]', nil,options={:class=>'form-control' ,:placeholder => 'comentarios'}  %>
+                            <label>La respuesta es:</label><br>
+                              <label>Correcta</label>&nbsp;<%= check_box_tag 'calificacion[]', true%>
+                              &nbsp;&nbsp;
+                              <label>Incorrecta</label>&nbsp;<%= check_box_tag 'calificacion[]', false%><br><br>
+                        <% end %> 
+                    <% end %>
+                  <% end %> 
+                <% end %>
+              <% end %>
+              <%= hidden_field_tag :id_cuestionario, @cuestionario.id %>
+              <%= hidden_field_tag :id_usuario, current_user.id %>
+              <br>
+              <input type="submit" value="Calificar" class="btn btn-primary">
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="page-header">
+     <h1 id="forms">Registrarse</h1>
+</div>
+<% if @usuario.errors.any? %>
+   <div id ="errorRegistroUsuario" class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <ul>
+         <% @usuario.errors.full_messages.each do |msg| %>
+         <li><%= msg %></li>
+         <% end %>
+      </ul>
+   </div>
+<% end %>
+<%= form_for @usuario do |usuario| %>
+  <% usuario.hidden_field  :activa, :value=>true %>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <Center><h3><b>Ingrese sus datos para registro</b></h3></Center>
+      </div>
+      <div class="panel-body">
+        <table class="table table-user-information">
+          <tbody>
+              <tr>
+                <td>Nombre:</td>
+                <td><%=usuario.text_field :nombre, :maxlength => 25, :placeholder=>'Nombre' %></td>
+              </tr>
+              <tr>
+                <td>Apellido:</td>
+                <td><%=usuario.text_field :apellido, :maxlength =>25, :placeholder=>'Apellido'  %></td>
+              </tr>
+              <tr>
+                <td>Telefono:</td>
+                <td><%=usuario.text_field :telefono, :maxlength =>25, :placeholder=>'Telefono'  %></td>
+              </tr>
+              <tr>
+                <td>Fecha de Nacimiento:</td>
+                <td><%= usuario.date_select :fecha_nacimiento, :order => [:day, :month, :year], :start_year => 1950 %></td>
+              </tr>
+              <tr>
+                <td>Acerca de mi:</td>
+                <td><%=usuario.text_area :acerca_de, :size => "30x5", :placeholder=>'Acerca de mi'  %></td>
+              </tr>
+              <tr>
+                <td>Nombre de Usuario:</td>
+                <td><%= usuario.text_field :nombre_usuario, :maxlength =>25, :placeholder=>'Nombre de Usuario' %></td>
+              </tr>
+              <tr>
+                <td>Correo Electronico:</td>
+                <td><%= usuario.text_field :correo, :maxlength=>50, :placeholder=>'E-mail' %></td>
+              </tr>
+              <tr>
+                <td>Contraseña:</td>
+                <td><%= usuario.password_field :contrasenia, :maxlength=>25, :placeholder=>'Contraseña', :required => true %></td>
+              </tr>
+              <tr>
+                <td>Confirmar Contraseña:</td>
+                <td><%= usuario.password_field :contrasenia_confirmation, :maxlength=>25, :placeholder=>'Confirmar Contraseña', :required => true %></td>
+              </tr>
+              <tr>
+                <td>Seleccionar Rol:</td>
+                <td><%= usuario.select :rol, options_for_select([["Docente", "Docente"], ["Estudiante", "Estudiante"]]) %></td>
+              </tr>
+              <tr>
+                <td>Mostrar Correo:</td>
+                <td><%= usuario.check_box :mostrar_correo %> <br /></td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="list-group">
+        <li class="list-group-item">
+          <center><input type="submit" name="Registrar" id="Registrar" value="Registrar" class="btn btn-success"></center>
+        </li>
+      </ul>
+    </div>
+<% end %>

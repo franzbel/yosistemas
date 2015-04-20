@@ -1,0 +1,216 @@
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/" style="padding-top: 10px;"><img src="/assets/nuevologo.png" width="99px"></a>
+    </div>
+    
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">        
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Temas<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <%if  !current_user.nil? %>
+            <% if !@grupo.nil? %>
+            <% if current_uri = request.env['PATH_INFO'].to_s != "/grupos/new" %>
+              <li><a href="/temas/new/<%=@grupo.id%>">Crear Tema</a></li>
+            <% end %>
+            <% end %>
+            <!--li><a href="/temas/show_mine">Mis Temas</a></li-->
+            <%end%>
+            <li><a href="/grupos/<%=@grupo.id%>/temas">Ver Temas</a></li>
+          </ul>
+        </li>
+        <%if !@grupo.nil? and @grupo.llave!="publico"%>
+        <% if current_uri = request.env['PATH_INFO'].to_s != "/grupos/new" %>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tareas<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">   
+            
+              <%if  !current_user.nil? %>
+                <% if !@grupo.nil? %>
+                  <% if current_user.rol == "Docente"%>
+                    <li><a href="/tareas/new/<%=@grupo.id%>">Crear Tarea</a></li>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <% if !@grupo.nil? %>
+                <li><a href="/grupos/<%=@grupo.id%>/tareas">Ver Tareas</a></li>
+              <% end %>
+            
+          </ul>
+        </li>
+        <% end %>  
+        <% end %>      
+
+        <%if !current_user.nil? %>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Grupos<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <%if current_user!=nil && current_user.rol == "Docente"%>
+            <li><a href="/grupos/new">Crear Grupo</a></li>
+            <%end%>
+            <li><a href="/grupos">Ver grupos</a></li>
+          </ul>
+        </li>
+        <%if !@grupo.nil? and @grupo.llave!="publico" %>
+          <% if current_uri = request.env['PATH_INFO'].to_s != "/grupos/new" %>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cuestionarios<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="/cuestionarios/cuestionarios_de_grupo_index/<%=@grupo.id%>">Ver Cuestionarios</a></li>
+                <%if current_user.rol == "Docente"%>
+                <li><a href="/cuestionarios/nuevo_cuestionario/<%=@grupo.id%>">Crear Cuestionario</a></li>
+                <%end%>
+              </ul>
+            </li>
+          <% end %>
+        <%end%>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Eventos<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+          <% if current_uri = request.env['PATH_INFO'].to_s != "/grupos/new" %> 
+          <% if !@grupo.nil? %>
+            <li><a href="/eventos/new/<%=@grupo.id%>">Crear Evento</a></li>
+            <%end%>
+          <% end %>
+            <li><a href="/grupos/<%=@grupo.id%>/eventos">Ver Eventos</a></li>
+          </ul>
+        </li>
+        
+        <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="/assets/message.png" width="21" title="Mensajes">
+        <%if  mensajes_nuevos.length >0 %>
+          <span class="badge"><%=mensajes_nuevos.length%></span>
+        <%end%>
+        </a>
+        <ul class="dropdown-menu">
+           <li><a href="#myModal" role="button" class="btn" data-toggle="modal">Enviar Mensaje</a></li>
+        <% mensajes_nuevos.each do |mensaje|%>
+            <% usuario = Usuario.find(mensaje.de_usuario_id)%>
+            <li class="divider"></li>
+            <li><a href="#" role="button" class="btn" onclick="showChat('<%=usuario.nombre_usuario%>','<%=usuario.id%>');" data-toggle="modal"><label style="margin-bottom: 7px;"><%=usuario.nombre_usuario%></label><span style="margin-left: 5px;" class="badge"><%=mensaje.cantidad%></span></a></li>
+        <%end%>
+        </ul>
+      </li>
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="/assets/not3.png" width="15" title="notificaciones">
+            <%if  notificaciones_nuevas.length >=0 %>
+              <span class="badge"><%=notificaciones_nuevas.length%></span>
+            <%end%>
+          </a>
+           <ul class="dropdown-menu scrollable-menu" role="menu">
+            <%if notificaciones_nuevas.length == 0 %>
+              <li><Center>No hay notificaciones :(</Center></li>
+            <%else%>
+              <li><a href="#notificationModal" role="button" class="btn" data-toggle="modal"></a></li>
+              <% notificaciones_nuevas.each do |notificacion|%>
+                <% usuario = Usuario.find(notificacion.de_usuario_id)%>
+                <li class="divider"></li>
+                <%if notificacion.tipo == 0 %>
+                  <li>
+                  <table>
+                    <tr>
+                      <th><a href="/tareas/<%=notificacion.id_item%>" role="button" class="btn" data-toggle="modal"><b><%=usuario.nombre_usuario%></b> ha creado la tarea <%=notificacion.title[0,5]+(notificacion.title.length>5 ? "..." : "")%>
+                      </a></th>
+                      <th align="right"><span><a href="/notifications/change_seen/<%=notificacion.id%>" role="button" class="btn" data-toggle="modal"><img src="/assets/notA.png" width="20" title="Eliminar notificaciones"></a></span></th>
+                    </tr>
+                  </table>
+                  </li>
+                <%end%>
+                <%if notificacion.tipo == 1 %>
+                  <li>
+                  <table>
+                    <tr>
+                      <th><a href="/temas/<%=notificacion.id_item%>" role="button" class="btn" data-toggle="modal" ><b><%=usuario.nombre_usuario%></b> ha creado el tema <%=notificacion.title[0,5]+(notificacion.title.length>5 ? "..." : "")%></a></th>
+                      <th></th>
+                      <th><span><a href="/notifications/change_seen/<%=notificacion.id%>" role="button" class="btn" data-toggle="modal"><img src="/assets/notA.png" width="20" title="Eliminar notificacion"></a></span></th>
+                    </tr>
+                  </table>
+                  </li>
+                <%end%>
+                <%if notificacion.tipo == 2 %>
+                 <li>
+                 <table>
+                   <tr>
+                     <th><a href="/eventos/<%=notificacion.id_item%>" role="button" class="btn" data-toggle="modal" ><b><%=usuario.nombre_usuario%></b> ha creado el evento <%=notificacion.title[0,5]+(notificacion.title.length>5 ? "..." : "")%></a></th>
+                     <th><span><a href="/notifications/change_seen/<%=notificacion.id%>" role="button" class="btn" data-toggle="modal"><img src="/assets/notA.png" width="20" title="Eliminar notificacion"></a></span></th>
+                   </tr>
+                 </table></li>
+                <%end%>
+                <%if notificacion.tipo == 3 %>
+                 <li>
+                 <table>
+                   <tr>
+                     <th><a href="#" role="button" class="btn" data-toggle="modal" ><b><%=usuario.nombre_usuario%></b> ha editado el cuestionario <%=notificacion.title[0,5]+(notificacion.title.length>5 ? "..." : "")%></a></th>
+                     <th><span><a href="/notifications/change_seen/<%=notificacion.id%>" role="button" class="btn" data-toggle="modal"><img src="/assets/notA.png" width="20" title="Eliminar notificacion"></a></span></th>
+                   </tr>
+                 </table></li>
+                <%end%>
+                <%if notificacion.tipo == 4 %>
+                  <li>
+                  <table>
+                    <tr>
+                      <th><a href="/temas/<%=notificacion.id_item%>" role="button" class="btn" data-toggle="modal" ><b><%=usuario.nombre_usuario%></b> ha comentado el tema <%=notificacion.title[0,5]+(notificacion.title.length>5 ? "..." : "")%></a></th>
+                      <th></th>
+                      <th><span><a href="/notifications/change_seen/<%=notificacion.id%>" role="button" class="btn" data-toggle="modal"><img src="/assets/notA.png" width="20" title="Eliminar notificacion"></a></span></th>
+                    </tr>
+                  </table>
+                  </li>
+                <%end%>
+                <%if notificacion.tipo == 5 %>
+                  <li>
+                  <table>
+                    <tr>
+                      <th><a href="/temas/<%=notificacion.id_item%>" role="button" class="btn" data-toggle="modal" ><b><%=usuario.nombre_usuario%></b> ha creado el tema <%=notificacion.title[0,5]+(notificacion.title.length>5 ? "..." : "")%></a></th>
+                      <th></th>
+                      <th><span><a href="/notifications/change_seen/<%=notificacion.id%>" role="button" class="btn" data-toggle="modal"><img src="/assets/notA.png" width="20" title="Eliminar notificacion"></a></span></th>
+                    </tr>
+                  </table>
+                  </li>
+                <%end%>
+              <%end%>
+            <%end %>
+          </ul>
+        </li>
+      </ul>
+        <%end%>
+            <% if @grupo!=nil%>
+              <form class="navbar-form navbar-left" method="GET" action="/temas_y_tareas/buscar/<%= @grupo.id%>">   
+                <input id="search" name="search" placeholder="Buscar Temas y Tareas" class="form-control input-sm"  style="width: 250px; height: 30px; margin-top: 5px;" type="text"><br>
+              </form>
+        <% end %>
+        <%if current_user.nil?%>
+          <form class="navbar-form navbar-right">
+            <%= link_to 'Ingresar',usuarios_path, class: "btn btn-success" %>
+          </form>
+        <%else%>
+          <ul class="nav navbar-nav" >
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= image_tag avatar_tam_url(current_user,20) %><%=" "+current_user.nombre_usuario%><b class="caret"></b></a>
+              <ul class="dropdown-menu pull-right" role="menu">
+                <li><a href=<%="/usuarios/"+current_user.id.to_s%>>Ver Perfil</a></li>
+                <li><a href=<%=usuario_edit_path%> >Modificar Perfil</a></li>
+                <li><a href=<%=update_password_path%> >Modificar Contraseña</a></li>
+                <li><a href=<%=usuario_cambiar_email_path%> >Modificar Correo Electronico</a></li>
+                <li><a href="/usuarios/set_notifications/<%=current_user.id%>">Configurar Notificaciones</a></li>
+                <% if current_user.rol=="Administrador" %>
+                  <li><a href="/agregar_url">Cambiar Url De Los Correos</a></li>
+                  <li><%= link_to 'Administrar Usuarios' , administrar_usuarios_path%></li>
+                <% end %>
+                <li><a class="no_ajaxify" href=<%=log_out_path%> >Salir</a></li>
+              </ul>
+            </li>
+          </ul>
+        <%end%>
+    </div><!--/.navbar-collapse -->  
+    </div>
+    
+  </div>
+</div>

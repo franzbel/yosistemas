@@ -1,0 +1,147 @@
+<%= form_for(@evento) do |f| %>
+  <% if @evento.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@evento.errors.count, "error") %> prohibited this evento from being saved:</h2>
+
+      <ul>
+      <% @evento.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+<div class="panel panel-warning">
+  <div class="panel-heading"><Center><H3><b>Ingrese los datos del evento</b></H3></Center></div>
+    <div class="panel-body">
+      <table class="table table-hover">
+        <tbody>
+          <tr>
+            <td><b>Nombre:</b></td>
+            <td> <%= f.text_field :nombre, :placeholder=>'Nombre Evento', :maxlength => 25 , :title => "El nombre del evento es obligatorio, Por favor rellene este campo", :required => true %></td>
+          </tr>
+          <tr>
+            <td><b>Detalle:</b></td>
+            <td><%= f.text_area :detalle, :size => "30x5", :placeholder=>'Contenido', :maxlength => 500,:required=>true %></td>
+          </tr>
+          <tr>
+            <td><b>Lugar:</b></td>
+            <td><%= f.text_field :lugar, :placeholder=>'Lugar del Evento', :maxlength => 25 , :title => "El lugar del evento es obligatorio, Por favor rellene este campo",:required => true %></td>
+          </tr>
+          <tr>
+            <td><b>Fecha:</b></td>
+            <td>
+             <%= f.date_select :fecha, :order => [:day, :month, :year], :start_year => 1950 %>  
+            </td>
+          </tr>
+          <tr>
+            <td><b>Hora:</b></td>
+            <td><%= f.time_select :hora %></td>
+          </tr>
+
+          <tr>
+             <td> <div class="ui-widget">
+              <label  for="grupos">Grupos: </label></td>
+              <td><input id="grupos">
+              <a href="#" onclick="getGrupo();"><img src="/assets/add.png" width="25"></a>
+            </div>
+            <br/>
+            <div id="gruposDiv">
+              <div id="<%=@grupo.nombre.gsub(' ','_')%>"><%=@grupo.nombre%><a href="#" onClick="quitarOpcion('<%=@grupo.nombre.gsub(' ','_')%>');"><img src="/assets/delete.png" width="20"></a> </div>
+            </div><td/>
+
+          </tr>
+        <div style="display:none;">
+             <strong><%=@grupo.nombre%></strong> <%= check_box_tag "grupos[]" , @grupo.id , checked = true , :id =>"check" + @grupo.nombre.gsub(' ','_')%><br/>
+            <% Grupo.all.each do |grupo| %>
+              <% if grupo.llave == "publico"%>
+               <%  if grupo.id != @GrupoDefecto.id %>
+                  <strong><%=grupo.nombre%></strong> 
+                  <%= check_box_tag  "grupos[]", grupo.id ,checked = false, :id => "check#{grupo.nombre.gsub(' ','_')}" %><br/>
+              <% end %>
+              <% end %>
+            <% end %>
+            <% current_user.missuscripciones.each do |grupo| %>
+              <% if grupo != @grupo %>
+                  <strong><%=grupo.nombre%></strong> 
+                  <%= check_box_tag  "grupos[]", grupo.id ,checked = false, :id => "check#{grupo.nombre.gsub(' ','_')}" %><br/>
+              <% end %>
+            <% end %>
+          </div>
+          
+
+        </tbody>
+      </table>
+    </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+        <center>
+          <a class="btn btn-danger" href="/eventos">Volver</a>
+          <input type="submit" value="Guardar evento" class="btn btn-success">
+        </center>
+    </li>
+  </ul>
+</div>
+
+<script>
+  $('.timepicker-default').timepicker();
+    $(function() {
+      $('#datetimepicker2').datetimepicker({
+                  language: 'es',
+                  pickTime: false,
+                  maskInput: true,
+                  startDate: new Date(), // set a minimum date
+                });
+              });
+</script>
+<% end %>
+
+
+ <script>
+  $(function() {
+   var gruposDisponibles = [
+<% current_user.missuscripciones.each do |grupo|%>
+  "<%=grupo.nombre%>",
+<% end %>
+<% Grupo.all.each do |grupo| %>
+    <% if grupo.llave == "publico" %>
+      "<%=grupo.nombre%>",
+    <% end %>
+<% end %>
+];
+   $( "#grupos" ).autocomplete({
+      source: gruposDisponibles,
+      minLength: 0
+   });
+   });
+
+
+
+  function getGrupo()
+  {
+    var gruposDisponibles = [
+  <% current_user.missuscripciones.each do |grupo|%>
+    "<%=grupo.nombre%>",
+  <% end %>
+  <% Grupo.all.each do |grupo| %>
+      <% if grupo.llave == "publico" %>
+        "<%=grupo.nombre%>",
+      <% end %>
+  <% end %>
+  ];
+    var grupo = document.getElementById("grupos").value;
+    var grupo_sin = grupo.replace(/\s/g, "_");
+    if ($("#" + grupo_sin).length < 1 && grupo != "" && jQuery.inArray(grupo,gruposDisponibles) != -1)
+    {
+      document.getElementById("gruposDiv").innerHTML+="<div id='"+grupo_sin+"'>"+ grupo +"<a href='#' onclick='quitarOpcion(&quot;"+grupo_sin+"&quot);'><img src='/assets/delete.png' width='20'></a> </div> ";
+       document.getElementById("check" + grupo_sin).checked = true;
+    }
+    return false;
+  };
+
+  function quitarOpcion(id)
+  {
+    $("#" + id).replaceWith("");
+    document.getElementById("check" + id).checked = false;
+    return false;
+  };
+</script>

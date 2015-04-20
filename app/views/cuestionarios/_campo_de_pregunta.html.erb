@@ -1,0 +1,28 @@
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <center>
+      <h3>
+        Agregar Pregunta
+      </h3>
+    </center>  
+  </div>
+
+  <div class="panel-body">
+    <%= preguntas_form.text_field :texto, :placeholder=>'Pregunta', :maxlength => 150 , size: "45"%>
+   <%= preguntas_form.select :tipo ,options_for_select(["Texto Libre","Opcion Multiple"]), {}, { :class => 'myselect', :onchange=>"mostrar_ocultar_opcion(this, this.value)" }%>
+    
+      <div class="semilla" style="display:none">
+        <% preguntas_form.fields_for :respuestas do |builder| %>
+        <%= render 'campo_de_respuesta', :respuestas_form => builder %>
+        <% end %>
+        <div class="list-group">
+          <div class="list-group-item">
+            <%= preguntas_form.link_to_add "Agregar Respuesta", :respuestas, :class=>"btn btn-success" %>
+          </div>
+        </div>
+      </div>
+      <%= preguntas_form.link_to_remove "Eliminar Pregunta", :class=>"btn btn-danger" %>
+  </div>
+</div>
+</div>
+

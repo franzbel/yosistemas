@@ -1,0 +1,41 @@
+<h1>Modificar Correo Electronico</h1>
+<div>
+	<% if flash[:status] == TRUE %>
+		<P><%= flash[:alert]%></P>
+	<% elsif flash[:status] == FALSE%>
+		<% flash[:alert].each do |error|%>
+			<p><%= error %></p>
+	<% end %>
+<% end %>
+</div>
+<%= form_for @usuario, :url =>guardar_cambio_email_path, :method=>'post'  do |usuario| %>
+<% usuario.hidden_field  :activa, :value=>true %>
+
+<div class="panel panel-info">
+  <div class="panel-heading">Cambiar E-mail</div>
+  <div class="panel-body">
+    <center><img class="img-circle"> <%= image_tag avatar_tam_url(@usuario,140) %></center><br>
+    <table class="table table-user-information">
+      <tbody>
+        <tr>
+          <td>Correo Actual:</td>
+          <td><%= usuario.text_field :correo, :disabled => true%></td>
+        </tr>
+        <tr>
+          <td>Nuevo correo:</td>
+          <td><%= text_field_tag :correonuevo, params[:correonuevo], :maxlength =>25%></td>
+        </tr>
+        <tr>
+          <td>Contraseña:</td>
+          <td><%= password_field_tag :contrasenia, params[:contrasenia] %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <center><button type="submit" class="btn btn-success">Guardar</button></center>
+    </li>
+  </ul>
+</div>
+<% end %>

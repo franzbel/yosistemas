@@ -1,0 +1,30 @@
+<div class="page-header">
+     <h1 id="forms">Lista de Tareas</h1>
+</div>
+
+
+  <%if current_user!=nil && current_user.id==@grupo.usuario_id%>
+
+      <a class="btn btn-success btn-lg" onclick="throwFade()" href="/tareas/new/<%=@grupo.id%>"><span class="icon-pencil icon-white"></span>Nueva Tarea</a>    
+  <%end%>
+<br><br>
+    <% @tareas.each do |tarea| %>
+    <%if tarea.admitido == true%>
+    <div class="panel panel-success" style='cursor:pointer' onclick=<%="document.location.href='/tareas/"+tarea.id.to_s+"'"%>>
+      <div class="panel-heading" title="Titulo"><h3><%= tarea.titulo %></h3></div>
+      <div class="panel-body">           
+            <img title="Tarea" src="/assets/tarea.png" style=" background-color: #3c763d;" />&nbsp;
+            <span><%= tarea.descripcion[0,315]+(tarea.descripcion.length>315 ? "..." : "") %></span>
+      </div>
+      <ul class="list-group">          
+              <li class="list-group-item"><small style="color: gray;">&nbsp;&nbsp;&nbsp;Tarea creada el <%= tarea.created_at.localtime.strftime("%d/%m/%Y a las: %I:%M  %p") %><br>
+              <span style="margin-left: 12px;"><i class="icon-calendar" style="margin-top: 0px;"></i>Fecha de entrega: <%= tarea.fecha_entrega.strftime("%d/%b/%Y")%></span></small></li>            
+         </ul>
+    </div>
+    <%end%>
+    <%end%>
+<center><%= paginate @tareas%></center>
+
+<script type="text/javascript">
+   $(".square-color-tarea").css("background-color",get_random_color());
+</script>

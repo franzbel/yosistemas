@@ -1,0 +1,19 @@
+<div class="page-header">
+  <h1 id="forms">Invitar amigos al grupo</h1>
+</div>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <%= @grupo.nombre %>
+  </div>
+  <div class="panel-body">
+    <%if current_user != nil%>
+      <form method='post' action="/grupos/enviar_invitaciones/<%=@grupo.id.to_s%>">
+        <input type="text" class="form-control" name="correos" required placeholder="Ingrese los correos separados por comas"><br>
+        <center><a href="/grupos" class="btn btn-danger">Atras</a>
+        <button type="submit" class="btn btn-primary">Enviar invitaciones</button></center>
+      </form>
+    <%end%>
+  </div>
+</div>
+
+

@@ -1,0 +1,68 @@
+<div>
+    <% if flash[:status] == TRUE %>
+	   <P>
+        <%= flash[:alert]%>
+       </P>
+	<% elsif flash[:status] == FALSE%>
+		<% flash[:alert].each do |error|%>
+			<p>
+                <%= error %>
+            </p>
+	   <% end %>
+    <% end %>
+</div>
+
+<%= form_for @usuario do |usuario| %>
+    <% usuario.hidden_field  :activa, :value=>true %>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3>
+                <b>Modificar Perfil de Usuario</b>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <center><img class="img-circle"> <%= image_tag avatar_tam_url(@usuario,110) %><br>
+                <a href="https://en.gravatar.com/"  target="_blank">Cambiar foto</a></center>
+                <table class="table table-user-information">
+                    <tbody>
+                        <tr>
+                            <td>Nombre:</td>
+                            <td><%= usuario.text_field :nombre, :maxlength => 25 %></td>                                    
+                        </tr>
+                        <tr>
+                            <td>Apellido:</td>
+                            <td><%= usuario.text_field :apellido, :maxlength => 25%></td>                                    
+                        </tr>
+                        <tr>
+                            <td>Telefono:</td>
+                            <td><%=usuario.text_field :telefono, :maxlength =>25%></td>
+                        </tr>
+                        <tr>
+                            <td>Fecha de nacimiento:</td>
+                            <td><%= usuario.date_select :fecha_nacimiento, :order => [:day, :month, :year], :start_year => 1950 %></td>
+                        </tr>                        
+                        <tr>
+                            <td>Acerca de Mi:</td>
+                            <td><%=usuario.text_area :acerca_de, :size => "30x5"%></td>
+                        </tr>
+                        <tr>
+                            <td>Rol:</td>
+                            <td><%=usuario.select :rol, options_for_select([["Docente", "Docente"], ["Estudiante", "Estudiante"]]) %></td>
+                        </tr>
+                        <tr>
+                            <td>Mostrar Correo:</td>
+                            <td><%= usuario.check_box :mostrar_correo %></td>
+                        </tr>                                    
+                    </tbody>
+                </table>         
+      </div>
+      <ul class="list-group">
+        <li class="list-group-item">
+            <center>
+                <a class="btn btn-danger" href=<%="/usuarios/"+current_user.id.to_s%>>Volver al perfil</a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </center>
+        </li>
+      </ul>
+    </div>
+<% end %>

@@ -1,0 +1,32 @@
+<div class="page-header">
+     <h1 id="forms">Lista de Eventos</h1>
+</div>
+
+<% @eventos.each do |evento| %>
+  <%if evento.nombre != "Publico"%>
+    <div class="panel panel-warning"style='cursor:pointer' onclick=<%="document.location.href='/"+evento.class.name.downcase+"s/"+evento.id.to_s+"'"%>>
+      <div class="panel-heading"><h3><%= evento.nombre %></h3></div>
+      <div class="panel-body">
+        <img title="Tema" src="/assets/tarea.png" style=" background-color: #CAB157;" />&nbsp;
+        <span><%= evento.detalle[0,315]+(evento.detalle.length>315 ? "..." : "") %><br><br>
+        <b>Lugar</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <%= evento.lugar[0,315] %><br>
+        <b>Fecha y Hora </b>&nbsp;&nbsp;
+        <%=evento.fecha%> 
+        <%=evento.hora.strftime("%H:%M")[0,315]%><br>
+        </span>
+      </div>
+      <ul class="list-group">
+        <li class="list-group-item">
+          <small style="color: gray;">Evento creado el <%= evento.created_at.localtime.strftime("%d/%m/%Y a las: %I:%M  %p") %><br/>
+          Usuario <a href="/usuarios/<%=evento.usuario.id%>"><%= evento.usuario.nombre_usuario %></a> </small>
+        </li>  
+      </ul>
+    </div>
+  <%end%>
+<%end%>
+
+
+<script type="text/javascript">
+   $(".square-color-tema").css("background-color",get_random_color());
+</script>
