@@ -50,7 +50,7 @@ describe TemasController do
       expect(assigns(:tema).usuario_id).to eq(usuario.id)
     end
 
-    it "asigna usuario actual" do 
+    it "asigna un grupo al que pertenece un tema" do 
     grupo = FactoryGirl.create(:grupo)
     usuario = FactoryGirl.create(:usuario)
     session[:usuario_id] = usuario.id
@@ -72,7 +72,7 @@ describe TemasController do
    end
 #    # para el segundo if
    context "cuando el usuario no es docente y la moderacon del grupo es true" do
-      it "" do
+      it "asigna los grupos dirigidos de tema" do
         # utilizamos nombres diferentes para pasar la validacion
         grupo1 = FactoryGirl.create(:grupo, nombre: 'grupo1', moderacion: true)
         grupo2 = FactoryGirl.create(:grupo, nombre: 'grupo2', moderacion: true)
@@ -80,12 +80,11 @@ describe TemasController do
         session[:usuario_id] = usuario.id
         @request.env['HTTP_REFERER'] = 'http://localhost:3000/temas/new'
         post :create, tema: FactoryGirl.attributes_for(:tema) ,  grupos:[grupo1.id, grupo2.id]
-        # expect(assigns(:tema).grupos_dirigidos).to eq([grupo1.id.to_s, grupo2.id.to_s])
         expect(assigns(:tema).grupos_dirigidos).to eq([])
       end
    end 
    context "cuando el usuario es docente y la moderacon del grupo es false" do
-      it "" do
+      it "asigna los grupos dirigidos de tema" do
         # utilizamos nombres diferentes para pasar la validacion
         grupo1 = FactoryGirl.create(:grupo, nombre: 'grupo1', moderacion: false)
         grupo2 = FactoryGirl.create(:grupo, nombre: 'grupo2', moderacion: false)
@@ -120,7 +119,7 @@ describe TemasController do
         end
     end
    context "cuando el usuario actual en un estudiante  y la moderacon del grupo es false" do
-       it "" do
+       it "asigna al arreglo grupos_para_notificar_si_moderacion_falsa los ids de los grupos" do
          grupo1 = FactoryGirl.create(:grupo, nombre: 'grupo1', moderacion: false)
          grupo2 = FactoryGirl.create(:grupo, nombre: 'grupo2', moderacion: false)
          usuario = FactoryGirl.create(:usuario, rol: "Estudiante")

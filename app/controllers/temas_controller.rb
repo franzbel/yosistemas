@@ -130,6 +130,34 @@ before_filter :grupos
      end 
   end
 
+
+  # POST /temas
+def create
+    # render text: params[:grupos]
+    @tema = Tema.new(tema_params)
+    @tema.usuario_id = current_user.id
+    if params[:grupos] != nil && @tema.save
+        grupos_pertenece(params[:grupos], @tema)
+        add_attached_files(@tema.id)
+        suscribir_usuario_actual(current_user.id, @tema.id)
+        if current_user.rol == "Docente"        
+            notificaciones_docente(params[:grupos], @tema)
+        end
+        if current_user.rol == "Estudiante" 
+            notificaciones_estudiante(params[:grupos], @tema)
+        end
+        flash[:alert] = 'Tema creado Exitosamente!'
+        redirect_to '/temas/'+@tema.id.to_s
+    else
+        flash[:alert] = 'El tema no pudo ser creado!'
+        redirect_to(:back)
+    end
+end
+
+
+
+
+private
 def grupos_pertenece (ids, tema)
   ids.each do |grupo_id|
     grupo = Grupo.find(grupo_id)
@@ -148,7 +176,7 @@ def suscribir_usuario_actual(current_user_id, tema_id)
   @suscripcion.save
       
 end
-def notificaciones(ids_grupos, tema)
+def notificaciones_estudiante(ids_grupos, tema)
   grupos_para_notificar_si_moderacion_falsa = Array.new
   grupos_para_notificar_si_moderacion_verdadera = Array.new
 
@@ -165,34 +193,13 @@ def notificaciones(ids_grupos, tema)
     notificar_por_email(grupos_para_notificar_si_moderacion_falsa, tema)
   end  
 end
-  # POST /temas
-def create
-    # render text: params[:grupos]
-    @tema = Tema.new(tema_params)
-    @tema.usuario_id = current_user.id
-    if params[:grupos] != nil && @tema.save
-        grupos_pertenece(params[:grupos], @tema)
-        add_attached_files(@tema.id)
-        suscribir_usuario_actual(current_user.id, @tema.id)
-        if current_user.rol == "Docente"        
-            notificacion_push(params[:grupos], @tema)
-            notificar_por_email(params[:grupos], @tema)
-        end
-        if current_user.rol == "Estudiante" 
-            notificaciones(params[:grupos], @tema)
-        end
-        flash[:alert] = 'Tema creado Exitosamente!'
-        redirect_to '/temas/'+@tema.id.to_s
-    else
-        flash[:alert] = 'El tema no pudo ser creado!'
-        redirect_to(:back)
-    end
+def notificaciones_docente(ids_grupos, tema)
+  notificacion_push(ids_grupos, tema)
+  notificar_por_email(ids_grupos, tema)
 end
 
 
 
-
-  private
     def add_attached_files(tema_id)
       if(!params[:tema][:archivo].nil?)
         params[:tema][:archivo].each do |arch|
