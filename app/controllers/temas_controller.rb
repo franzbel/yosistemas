@@ -1,5 +1,6 @@
 require 'pusher'
 class TemasController < ApplicationController
+# decorates_assigned :tema
 skip_before_filter :require_log_in,:only=>[:index,:search,:searchByDescription,:show,:searchtitulo]
 before_filter :grupos
   def index
@@ -8,6 +9,8 @@ before_filter :grupos
     @temas = @grupo.temas_aprobados
     
     @ides=sacarIds(@temas)
+     # render text: "okk"
+     # render text: params[:grupos].inspect
   end
 
 
@@ -115,35 +118,41 @@ before_filter :grupos
       #end
     #end
       @comentarios= Kaminari.paginate_array(@tema.tema_comentarios).page(params[:page]).per(10)
-    else
-      @temas = @grupo.temas.order("updated_at DESC").page(params[:page]).per(5)
+    # else
+    #   @temas = @grupo.temas.order("updated_at DESC").page(params[:page]).per(5)
       
-      if Tema.where(:id => params[:id])
-        flash[:alert] = 'El Tema fue eliminado'
-        redirect_to '/no_existe'
-      else
-        redirect_to :back
-      end
-    end 
+    #   if Tema.where(:id => params[:id])
+    #     flash[:alert] = 'El Tema fue eliminado'
+    #     redirect_to '/no_existe'
+    #   else
+    #     redirect_to :back
+    #   end
+     end 
   end
 
+def grupos_pertenece (ids, tema)
+  ids.each do |grupo_id|
+    grupo = Grupo.find(grupo_id)
+    grupo.temas << tema
+    tema.grupos_pertenece << grupo_id
+    grupo.save
+    if current_user.rol == "Docente" || !Grupo.find(grupo).moderacion 
+       tema.grupos_dirigidos << grupo_id
+    end
+  end
+end
   # POST /temas
   def create
+    # render text: params[:grupos]
     @tema = Tema.new(tema_params)
     @tema.usuario_id = current_user.id
-
     if params[:grupos] != nil && @tema.save
-      params[:grupos].each do |grupo|
-        grupi = Grupo.find(grupo)
-        grupi.temas << @tema
-        @tema.grupos_pertenece << grupo
-        grupi.save
-        if current_user.rol == "Docente" || !Grupo.find(grupo).moderacion 
-          @tema.grupos_dirigidos << grupo
-        end
-      end
+      grupos_pertenece(params[:grupos], @tema)
 
-      @tema.save
+# redirect_to(:back)
+# end
+
+
       add_attached_files(@tema.id)
       
       @suscripcion=SuscripcionTema.new

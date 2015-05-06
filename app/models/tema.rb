@@ -1,4 +1,5 @@
 class Tema < ActiveRecord::Base
+  
   serialize :grupos_pertenece, Array
   serialize :grupos_dirigidos, Array
   has_many :tema_comentarios

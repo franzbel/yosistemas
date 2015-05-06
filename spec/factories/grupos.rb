@@ -7,6 +7,7 @@ FactoryGirl.define do
     estado false
     llave "qwerty"
     usuario_id nil
+
   end
 end
 
@@ -16,5 +17,14 @@ FactoryGirl.define do
   descripcion "todos deben tener ingreso a temas publicos"
   estado false
   llave "publico"
+  end
+end
+
+FactoryGirl.define do
+  factory :grupo_sin_moderacion, class: Grupo do
+  nombre "Publico" 
+  descripcion "todos deben tener ingreso a temas publicos"
+  estado false
+  moderacion true
   end
 end

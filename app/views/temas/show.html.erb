@@ -21,20 +21,7 @@
         <ul>
         <% @tema.archivo_adjunto_temas.each do |arch| %>
           <li class="attachment-link" title="Archivo tipo .<%=arch.archivo_file_name.split('.').last%>">
-            <% if arch.archivo_file_name.split('.').last=="jpg" or arch.archivo_file_name.split('.').last=="jpeg" or arch.archivo_file_name.split('.').last=="png" %>
-              <a href="#" data-toggle="modal" data-target=".bs-example-modal-lg"><img class="attachment-img" src="/assets/filetypes/default.png" file-type="<%=arch.archivo_file_name.split('.').last%>"><%=arch.archivo_file_name[0,arch.archivo_file_name.rindex('.')]%></a> 
-              <a href="<%=arch.archivo.url(download: true)%>">Descargar archivo</a>
-              <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria- labelledby="myLargeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                  <div class="modal-content">
-                    <%= image_tag arch.archivo.url %>
-                  </div>
-                </div>
-              </div>
-            <% else %>
-              <a href="https://docs.google.com/gview?url=<%=arch.archivo.url%>&embedded=true" target="_blank"><img class="attachment-img" src="/assets/filetypes/default.png" file-type="<%=arch.archivo_file_name.split('.').last%>" ><%=arch.archivo_file_name[0,arch.archivo_file_name.rindex('.')]%></a>
-              <a href="<%=arch.archivo.url(download: true)%>">Descargar archivo</a>
-            <% end %>
+              <%= render(:partial => "archivo_adjunto", :locals => {:arch=>arch})  %>
           </li>
           </br>
         <%end%>
@@ -102,7 +89,7 @@
       <% comentario.adjunto_tema_comentarios.each do |arch|%>
         <div class="attachment-link" title="Archivo tipo .<%=arch.archivo_file_name.split('.').last%>">
           <% if arch.archivo_file_name.split('.').last=="jpg" or arch.archivo_file_name.split('.').last=="jpeg" or arch.archivo_file_name.split('.').last=="png" %>
-              <a href="#" data-toggle="modal" data-target=".bs-example-modal-sm"><img class="attachment-img" src="/assets/filetypes/default.png" file-type="<%=arch.archivo_file_name.split('.').last%>"><%=arch.archivo_file_name[0,arch.archivo_file_name.rindex('.')]%></a> 
+              <a href="#" data-toggle="modal" data-target=".bs-example-modal-sm"><img class="attachment-img" src="/assets/filetypes/default.png" file-type="<%=arch.archivo_file_name.split('.').last%>"><%=arch.archivo_file_name[0,arch.archivo_file_name.rindex('.')]%></a>
               <a href="<%=arch.archivo.url(download: true)%>">Descargar archivo</a>
               <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria- labelledby="myLargeModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -138,7 +125,7 @@
         <input id="showFiles" class="form-control" type="text" placeholder="Seleccione archivos..." onclick="document.getElementById('tema_comentario_archivo').click();" onfocus="this.blur();">
           <%= f.file_field :archivo , :class=>'form-control',:multiple => true, :style=>"display:none;", :onchange=>"barra(this.files[0].size);document.getElementById('showFiles').value = (this.files.length>1)?''+this.files.length+' Archivos seleccionados.':this.files[0].name;" %>
           <span class="input-group-addon" style="background-color: #256188; cursor:pointer;" onclick="document.getElementById('tema_comentario_archivo').click();">
-            <i class="icon-file icon-white"></i>
+            <i class="icon-file icon-white" style="color:white;">Buscar el acrhivo</i> <!--AQUI****************-->
           </span>
         </div>
        
