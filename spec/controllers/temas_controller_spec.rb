@@ -96,6 +96,18 @@ describe TemasController do
          expect(assigns(:tema).grupos_dirigidos).to eq([grupo1.id.to_s, grupo2.id.to_s])
       end
    end 
+   
+   it "suscribe al usuario actual al tema creado" do
+      grupo1 = FactoryGirl.create(:grupo, nombre: 'grupo1')
+      grupo2 = FactoryGirl.create(:grupo, nombre: 'grupo2')
+      
+      usuario = FactoryGirl.create(:usuario)
+      session[:usuario_id] = usuario.id
+        
+      post :create, tema: FactoryGirl.attributes_for(:tema) ,  grupos:[grupo1.id, grupo2.id]
+      expect(assigns(:suscripcion).tema_id).to eq(Tema.first.id)
+      expect(assigns(:suscripcion).usuario_id).to eq(usuario.id)
+   end
   end
 
   # describe "POST create" do
