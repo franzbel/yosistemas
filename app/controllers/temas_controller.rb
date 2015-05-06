@@ -162,6 +162,8 @@ end
       suscribir_usuario_actual(current_user.id, @tema.id)
       
       if current_user.rol == "Docente"        
+        
+
         notificacion_push(params[:grupos], @tema)
         notificar_por_email(params[:grupos], @tema)
       end
@@ -174,16 +176,19 @@ end
           params[:grupos].each do |grupo_id|
             if Grupo.find(grupo_id).moderacion
               grupos_para_notificar_si_moderacion_verdadera << grupo_id
+              @moderacion_true = grupos_para_notificar_si_moderacion_verdadera
             else
               grupos_para_notificar_si_moderacion_falsa << grupo_id
+              @moderacion_false = grupos_para_notificar_si_moderacion_falsa
             end        
-            notificar_creacion(grupos_para_notificar_si_moderacion_verdadera, @tema)
-            notificacion_push(grupos_para_notificar_si_moderacion_falsa, @tema)
-            notificar_por_email(grupos_para_notificar_si_moderacion_falsa, @tema)
+              notificar_creacion(grupos_para_notificar_si_moderacion_verdadera, @tema)
+              notificacion_push(grupos_para_notificar_si_moderacion_falsa, @tema)
+              notificar_por_email(grupos_para_notificar_si_moderacion_falsa, @tema)
           end
         end
 
       flash[:alert] = 'Tema creado Exitosamente!'
+      grupos_para_notificar_si_moderacion_verdadera 
       redirect_to '/temas/'+@tema.id.to_s
     else
       flash[:alert] = 'El tema no pudo ser creado!'

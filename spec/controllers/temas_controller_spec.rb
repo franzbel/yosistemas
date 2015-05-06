@@ -38,7 +38,7 @@ describe TemasController do
     end
   end
   
-  describe 'POST #create' do
+   describe 'POST #create' do
     it "asigna usuario actual" do 
       grupo = FactoryGirl.create(:grupo)
       usuario = FactoryGirl.create(:usuario)
@@ -60,7 +60,7 @@ describe TemasController do
 
     expect(assigns(:tema).grupos_pertenece).to eq([grupo.id.to_s])
     end
-   #solo la primera parte del primer if
+#    #solo la primera parte del primer if
    it "asigna los grupos a los que pertenece un tema" do
       grupo1 = FactoryGirl.create(:grupo, nombre: 'grupo1')
       grupo2 = FactoryGirl.create(:grupo, nombre: 'grupo2')
@@ -70,7 +70,7 @@ describe TemasController do
       post :create, tema: FactoryGirl.attributes_for(:tema) ,  grupos:[grupo1.id, grupo2.id]
       expect(assigns(:tema).grupos_pertenece).to eq([grupo1.id.to_s, grupo2.id.to_s])
    end
-   # para el segundo if
+#    # para el segundo if
    context "cuando el usuario no es docente y la moderacon del grupo es true" do
       it "" do
         # utilizamos nombres diferentes para pasar la validacion
@@ -108,7 +108,31 @@ describe TemasController do
       expect(assigns(:suscripcion).tema_id).to eq(Tema.first.id)
       expect(assigns(:suscripcion).usuario_id).to eq(usuario.id)
    end
-  end
+    context "cuando el usuario actual en un estudiante  y la moderacion del grupo es true" do
+        it "asigna al arreglo grupos_para_notificar_si_moderacion_verdadera los ids de los grupos" do
+         grupo1 = FactoryGirl.create(:grupo, nombre: 'grupo1')
+         grupo2 = FactoryGirl.create(:grupo, nombre: 'grupo2')
+         usuario = FactoryGirl.create(:usuario, rol: "Estudiante")
+         session[:usuario_id] = usuario.id
+         @request.env['HTTP_REFERER'] = 'http://localhost:3000/temas/new'
+         post :create, tema: FactoryGirl.attributes_for(:tema) ,  grupos:[grupo1.id, grupo2.id]
+         expect(assigns(:moderacion_false)).to eq([grupo1.id.to_s, grupo2.id.to_s])  
+        end
+    end
+   context "cuando el usuario actual en un estudiante  y la moderacon del grupo es false" do
+       it "" do
+         grupo1 = FactoryGirl.create(:grupo, nombre: 'grupo1', moderacion: false)
+         grupo2 = FactoryGirl.create(:grupo, nombre: 'grupo2', moderacion: false)
+         usuario = FactoryGirl.create(:usuario, rol: "Estudiante")
+         session[:usuario_id] = usuario.id
+         @request.env['HTTP_REFERER'] = 'http://localhost:3000/temas/new'
+         post :create, tema: FactoryGirl.attributes_for(:tema) ,  grupos:[grupo1.id, grupo2.id]
+         expect(assigns(:moderacion_false)).to eq([grupo1.id.to_s, grupo2.id.to_s])
+      
+       end
+   end
+   end
+ end
 
   # describe "POST create" do
   #   it "Crea un nuevo tema" do
@@ -302,4 +326,3 @@ describe TemasController do
 #     assigns(:tema).should eq tema
 #   end
 
-end
