@@ -141,24 +141,25 @@ def grupos_pertenece (ids, tema)
     end
   end
 end
+def suscribir_usuario_actual(current_user_id, tema_id)
+  @suscripcion=SuscripcionTema.new
+  @suscripcion.usuario_id=current_user_id
+  @suscripcion.tema_id=tema_id
+  @suscripcion.save
+      
+end
   # POST /temas
   def create
     # render text: params[:grupos]
     @tema = Tema.new(tema_params)
     @tema.usuario_id = current_user.id
     if params[:grupos] != nil && @tema.save
+      
       grupos_pertenece(params[:grupos], @tema)
-
-# redirect_to(:back)
-# end
-
-
+      
       add_attached_files(@tema.id)
       
-      @suscripcion=SuscripcionTema.new
-      @suscripcion.usuario_id=current_user.id
-      @suscripcion.tema_id=@tema.id
-      @suscripcion.save
+      suscribir_usuario_actual(current_user.id, @tema.id)
       
       if current_user.rol == "Docente"        
         notificacion_push(params[:grupos], @tema)
