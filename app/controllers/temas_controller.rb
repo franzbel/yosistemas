@@ -135,7 +135,7 @@ def grupos_pertenece (ids, tema)
     grupo = Grupo.find(grupo_id)
     grupo.temas << tema
     tema.grupos_pertenece << grupo_id
-    grupo.save
+    tema.save
     if current_user.rol == "Docente" || !Grupo.find(grupo).moderacion 
        tema.grupos_dirigidos << grupo_id
     end
@@ -148,53 +148,49 @@ def suscribir_usuario_actual(current_user_id, tema_id)
   @suscripcion.save
       
 end
+def notificaciones(ids_grupos, tema)
+  grupos_para_notificar_si_moderacion_falsa = Array.new
+  grupos_para_notificar_si_moderacion_verdadera = Array.new
+
+  ids_grupos.each do |grupo_id|
+    if Grupo.find(grupo_id).moderacion
+      grupos_para_notificar_si_moderacion_verdadera << grupo_id
+      @moderacion_true = grupos_para_notificar_si_moderacion_verdadera
+    else
+      grupos_para_notificar_si_moderacion_falsa << grupo_id
+      @moderacion_false = grupos_para_notificar_si_moderacion_falsa
+    end        
+    notificar_creacion(grupos_para_notificar_si_moderacion_verdadera, tema)
+    notificacion_push(grupos_para_notificar_si_moderacion_falsa, tema)
+    notificar_por_email(grupos_para_notificar_si_moderacion_falsa, tema)
+  end  
+end
   # POST /temas
-  def create
+def create
     # render text: params[:grupos]
     @tema = Tema.new(tema_params)
     @tema.usuario_id = current_user.id
     if params[:grupos] != nil && @tema.save
-      
-      grupos_pertenece(params[:grupos], @tema)
-      
-      add_attached_files(@tema.id)
-      
-      suscribir_usuario_actual(current_user.id, @tema.id)
-      
-      if current_user.rol == "Docente"        
-        
-
-        notificacion_push(params[:grupos], @tema)
-        notificar_por_email(params[:grupos], @tema)
-      end
-
-      grupos_para_notificar_si_moderacion_falsa = Array.new
-      grupos_para_notificar_si_moderacion_verdadera = Array.new
-
-
-      if current_user.rol == "Estudiante" 
-          params[:grupos].each do |grupo_id|
-            if Grupo.find(grupo_id).moderacion
-              grupos_para_notificar_si_moderacion_verdadera << grupo_id
-              @moderacion_true = grupos_para_notificar_si_moderacion_verdadera
-            else
-              grupos_para_notificar_si_moderacion_falsa << grupo_id
-              @moderacion_false = grupos_para_notificar_si_moderacion_falsa
-            end        
-              notificar_creacion(grupos_para_notificar_si_moderacion_verdadera, @tema)
-              notificacion_push(grupos_para_notificar_si_moderacion_falsa, @tema)
-              notificar_por_email(grupos_para_notificar_si_moderacion_falsa, @tema)
-          end
+        grupos_pertenece(params[:grupos], @tema)
+        add_attached_files(@tema.id)
+        suscribir_usuario_actual(current_user.id, @tema.id)
+        if current_user.rol == "Docente"        
+            notificacion_push(params[:grupos], @tema)
+            notificar_por_email(params[:grupos], @tema)
         end
-
-      flash[:alert] = 'Tema creado Exitosamente!'
-      grupos_para_notificar_si_moderacion_verdadera 
-      redirect_to '/temas/'+@tema.id.to_s
+        if current_user.rol == "Estudiante" 
+            notificaciones(params[:grupos], @tema)
+        end
+        flash[:alert] = 'Tema creado Exitosamente!'
+        redirect_to '/temas/'+@tema.id.to_s
     else
-      flash[:alert] = 'El tema no pudo ser creado!'
-      redirect_to(:back)
+        flash[:alert] = 'El tema no pudo ser creado!'
+        redirect_to(:back)
     end
-  end
+end
+
+
+
 
   private
     def add_attached_files(tema_id)
